@@ -1,0 +1,1114 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/game_provider.dart';
+import '../widgets/navbar.dart';
+import '../widgets/footer.dart';
+import '../models/language.dart';
+
+class HomePage extends StatefulWidget {
+  final Function(String) onNavigate;
+
+  const HomePage({super.key, required this.onNavigate});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late AnimationController _floatController;
+  late ScrollController _scrollController;
+  Language _currentLanguage = Language.english;
+
+  String getText(String en, String fr, String es) {
+    switch (_currentLanguage) {
+      case Language.english:
+        return en;
+      case Language.french:
+        return fr;
+      case Language.spanish:
+        return es;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _floatController = AnimationController(
+      duration: const Duration(seconds: 4),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    _floatController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gameProvider = Provider.of<GameProvider>(context);
+    final isMobile = MediaQuery.of(context).size.width < 900;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF2a1810),
+      body: Column(
+        children: [
+          // Navigation Bar
+          NavBar(
+            currentLanguage: _currentLanguage,
+            onLanguageChanged: (lang) => setState(() => _currentLanguage = lang),
+            onNavigate: widget.onNavigate,
+            currentPage: 'home',
+          ),
+          // Main Content
+          Expanded(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                // 120+ FAITH CARDS - AS A STACKED CARD
+                Container(
+              margin: const EdgeInsets.only(top: 0),
+                padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 20),
+                width: double.infinity,
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height * 0.45,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1a1410),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(120),
+                    topRight: Radius.circular(120),
+                  ),
+                  boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 15,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    // Card 1 Label
+                  Positioned(
+                    top: 15,
+                    left: 20,
+                    child: Text(
+                      'CARD 1',
+                      style: TextStyle(
+                        fontSize: isMobile ? 10 : 12,
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFFd4a574).withOpacity(0.6),
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ),
+                  // Decorative crosses - top left
+                  Positioned(
+                    left: isMobile ? 20 : 40,
+                    top: isMobile ? 20 : 40,
+                    child: _buildDecorativeCross(size: isMobile ? 60 : 100),
+                  ),
+                  // Decorative crosses - bottom right
+                  Positioned(
+                    right: isMobile ? 20 : 40,
+                    bottom: isMobile ? 20 : 40,
+                    child: _buildDecorativeCross(size: isMobile ? 60 : 100),
+                  ),
+                  // Corner numbers
+                  Positioned(
+                    left: isMobile ? 20 : 50,
+                    top: isMobile ? 100 : 150,
+                    child: Text(
+                      '18',
+                      style: TextStyle(
+                        fontSize: isMobile ? 36 : 72,
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFFd4a574),
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: isMobile ? 20 : 50,
+                    bottom: isMobile ? 100 : 150,
+                    child: Text(
+                      '18',
+                      style: TextStyle(
+                        fontSize: isMobile ? 28 : 48,
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFFd4a574),
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ),
+                  // Decorative sticky notes with pins
+                  _buildStickyNote(isMobile ? 30 : 50, isMobile ? 80 : 120, '📌', isMobile),
+                  _buildStickyNote(
+                    MediaQuery.of(context).size.width - (isMobile ? 100 : 120),
+                    isMobile ? 180 : 200,
+                    '📌',
+                    isMobile,
+                  ),
+                  _buildStickyNote(isMobile ? 120 : 180, isMobile ? 300 : 350, '📌', isMobile),
+                  // Center content
+                  Center(
+                    child: _buildLargeFeatureCard(isMobile),
+                  ),
+                ],
+              ),
+            ),
+            // EXPLORE MORE SECTION
+            Container(
+              margin: const EdgeInsets.only(top: -50),
+              padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 20),
+              width: double.infinity,
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height * 0.45,
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0f0c0a),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(120),
+                  topRight: Radius.circular(120),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 20,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'CARD 2',
+                    style: TextStyle(
+                      fontSize: isMobile ? 10 : 12,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFFd4a574).withOpacity(0.6),
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _buildSectionLabel(
+                    getText('EXPLORE THE CARDS', 'EXPLORER LES CARTES', 'EXPLORAR LAS CARTAS'),
+                  ),
+                  const SizedBox(height: 60),
+                  Center(
+                    child: Wrap(
+                      spacing: 30,
+                      runSpacing: 30,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        _buildFeatureBox(
+                          '⛪',
+                          getText('Easy to Learn', 'Facile à Apprendre', 'Fácil de Aprender'),
+                          getText(
+                              'Perfect for Bible study groups',
+                              'Parfait pour les groupes d\'étude biblique',
+                              'Perfecto para grupos de estudio bíblico'),
+                        ),
+                        _buildFeatureBox(
+                          '📖',
+                          getText('Strategic Gameplay', 'Jeu Stratégique', 'Juego Estratégico'),
+                          getText(
+                              'Deep, engaging card mechanics',
+                              'Mécaniques de cartes profondes et engageantes',
+                              'Mecánicas de cartas profundas y atractivas'),
+                        ),
+                        _buildFeatureBox(
+                          '🎯',
+                          getText('Fun & Engaging', 'Amusant & Captivant', 'Divertido e Interesante'),
+                          getText(
+                              'Make learning faith enjoyable',
+                              'Rendre l\'apprentissage de la foi agréable',
+                              'Hacer que el aprendizaje de la fe sea agradable'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+                ),
+            // CTA SECTION
+            Container(
+              margin: const EdgeInsets.only(top: -50),
+              padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 20),
+              width: double.infinity,
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height * 0.45,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    const Color(0xFF3d5a4a),
+                    const Color(0xFF5a3e2b),
+                  ],
+                ),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(120),
+                  topRight: Radius.circular(120),
+                  bottomLeft: Radius.circular(0),
+                  bottomRight: Radius.circular(0),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 20,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'CARD 3',
+                    style: TextStyle(
+                      fontSize: isMobile ? 10 : 12,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white.withOpacity(0.6),
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Text(
+                    getText(
+                        'Ready to Build Your Faith?',
+                        'Prêt à renforcer votre foi?',
+                        '¿Listo para Fortalecer tu Fe?'),
+                    style: TextStyle(
+                      fontSize: isMobile ? 22 : 32,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Text(
+                    getText(
+                        'Join thousands learning God\'s word through strategic, fun gameplay',
+                        'Rejoignez des milliers de personnes apprenant la parole de Dieu par le jeu',
+                        'Únete a miles aprendiendo la palabra de Dios a través del juego estratégico'),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isMobile ? 14 : 18,
+                      color: const Color(0xFFe8c4a0),
+                      height: 1.6,
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildCTAButton(
+                        getText('✝️ GET YOUR COPY', '✝️ OBTENEZ VOTRE COPIE', '✝️ CONSIGUE TU COPIA'),
+                        true,
+                        () => _showBuyDialog(),
+                      ),
+                      const SizedBox(width: 25),
+                      _buildCTAButton(
+                        getText('⛪ VIEW CARDS', '⛪ VOIR LES CARTES', '⛪ VER CARTAS'),
+                        false,
+                        () => _showCardGallery(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Footer
+          AppFooter(currentPage: 'home'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDecorativeCross({required double size}) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        children: [
+          // Horizontal lines
+          Positioned(
+            left: size * 0.2,
+            top: size * 0.45,
+            width: size * 0.6,
+            height: size * 0.1,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: const Color(0xFFd4a574),
+                    width: 4,
+                  ),
+                  bottom: BorderSide(
+                    color: const Color(0xFFd4a574),
+                    width: 4,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Vertical lines
+          Positioned(
+            left: size * 0.45,
+            top: size * 0.2,
+            width: size * 0.1,
+            height: size * 0.6,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: const Color(0xFFd4a574),
+                    width: 4,
+                  ),
+                  right: BorderSide(
+                    color: const Color(0xFFd4a574),
+                    width: 4,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotebookCard(GameProvider gameProvider, bool isMobile) {
+    final titleEn = '120+ FAITH CARDS';
+    final titleFr = '120+ CARTES DE FOI';
+    final titleEs = '120+ CARTAS DE FE';
+    final subtitleEn = '✝️ Strategic gameplay\n🎯 Biblical wisdom\n⛪ Community fun';
+    final subtitleFr = '✝️ Jeu stratégique\n🎯 Sagesse biblique\n⛪ Plaisir communautaire';
+    final subtitleEs = '✝️ Juego estratégico\n🎯 Sabiduría bíblica\n⛪ Diversión comunitaria';
+    final priceEn = '\$34.99';
+    final ratingEn = '★ 4.9';
+    final buyEn = 'BUY NOW';
+    final buyFr = 'ACHETER';
+    final buyEs = 'COMPRAR';
+
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 20 : 40),
+      decoration: BoxDecoration(
+        color: const Color(0xFF6b5344),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: const Color(0xFF3a3024),
+          width: 8,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 40,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: const Color(0xFFd4a574),
+                  width: 2,
+                ),
+              ),
+            ),
+            child: Text(
+              'NOTE BOOK',
+              style: TextStyle(
+                fontSize: isMobile ? 16 : 22,
+                fontWeight: FontWeight.w900,
+                color: const Color(0xFFd4a574),
+                letterSpacing: 3,
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          // Title
+          Text(
+            getText(titleEn, titleFr, titleEs),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: isMobile ? 24 : 32,
+              fontWeight: FontWeight.w900,
+              color: const Color(0xFFd4a574),
+              height: 1.4,
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Decorative line
+          Container(
+            height: 2,
+            width: 100,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  const Color(0xFFd4a574),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Features
+          Text(
+            getText(subtitleEn, subtitleFr, subtitleEs),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: isMobile ? 14 : 16,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFFe8c4a0),
+              height: 2.0,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Flower emoji
+          Text(
+            '🌼',
+            style: TextStyle(fontSize: isMobile ? 40 : 60),
+          ),
+          const SizedBox(height: 30),
+          // Price and rating
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    priceEn,
+                    style: TextStyle(
+                      fontSize: isMobile ? 24 : 32,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFFd4a574),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                    ratingEn,
+                    style: TextStyle(
+                      fontSize: isMobile ? 24 : 32,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFFd4a574),
+                    ),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () => _showBuyDialog(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    color: const Color(0xFFc19a6b),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFc19a6b).withOpacity(0.4),
+                        blurRadius: 15,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    getText(buyEn, buyFr, buyEs),
+                    style: TextStyle(
+                      fontSize: isMobile ? 11 : 13,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFF1a1410),
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStickyNote(double left, double top, String emoji, bool isMobile) {
+    return Positioned(
+      left: left,
+      top: top,
+      child: AnimatedBuilder(
+        animation: _floatController,
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(
+              0,
+              sin(_floatController.value * 2 * pi) * (isMobile ? 8 : 15),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: isMobile ? 50 : 70,
+                  height: isMobile ? 50 : 70,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFf4e4a0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 4),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  emoji,
+                  style: TextStyle(fontSize: isMobile ? 16 : 24),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSectionLabel(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: const Color(0xFFc19a6b), width: 2),
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 13,
+          color: Color(0xFFd4a574),
+          fontWeight: FontWeight.w900,
+          letterSpacing: 2.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureBox(String icon, String title, String description) {
+    return Container(
+      width: 280,
+      padding: const EdgeInsets.all(25),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(60),
+        border: Border.all(color: const Color(0xFFc19a6b), width: 2),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF2a2218),
+            const Color(0xFF1f1a15),
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 50)),
+          const SizedBox(height: 18),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFFd4a574),
+              letterSpacing: 1,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 15,
+              color: Color(0xFFe8c4a0),
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLargeFeatureCard(bool isMobile) {
+    return Container(
+      constraints: BoxConstraints(maxWidth: isMobile ? MediaQuery.of(context).size.width - 60 : 500),
+      padding: const EdgeInsets.all(25),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        border: Border.all(color: const Color(0xFFc19a6b), width: 2),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF2a2218),
+            const Color(0xFF1f1a15),
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          Text('�', style: TextStyle(fontSize: isMobile ? 28 : 38)),
+          const SizedBox(height: 12),
+          Text(
+            getText('120+ FAITH CARDS', '120+ CARTES DE FOI', '120+ CARTAS DE FE'),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: isMobile ? 22 : 28,
+              fontWeight: FontWeight.w900,
+              color: const Color(0xFFd4a574),
+              letterSpacing: 2,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            height: 2,
+            width: 100,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  const Color(0xFFd4a574),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            getText(
+                '✝️ Strategic gameplay\n🎯 Biblical wisdom\n⛪ Community fun',
+                '✝️ Jeu stratégique\n🎯 Sagesse biblique\n⛪ Plaisir communautaire',
+                '✝️ Juego estratégico\n🎯 Sabiduría bíblica\n⛪ Diversión comunitaria'),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: isMobile ? 13 : 15,
+              color: const Color(0xFFe8c4a0),
+              height: 1.6,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Price and rating row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    '\$34.99',
+                    style: TextStyle(
+                      fontSize: isMobile ? 18 : 24,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFFd4a574),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                    '★ 4.9',
+                    style: TextStyle(
+                      fontSize: isMobile ? 18 : 24,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFFd4a574),
+                    ),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () => _showBuyDialog(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    color: const Color(0xFFc19a6b),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFc19a6b).withOpacity(0.4),
+                        blurRadius: 15,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    getText('BUY NOW', 'ACHETER', 'COMPRAR'),
+                    style: TextStyle(
+                      fontSize: isMobile ? 13 : 15,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFF1a1410),
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCTAButton(String label, bool isPrimary, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: isPrimary ? const Color(0xFFc19a6b) : Colors.transparent,
+          border: Border.all(
+            color: const Color(0xFFc19a6b),
+            width: 2,
+          ),
+          boxShadow: isPrimary
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFFc19a6b).withOpacity(0.4),
+                    blurRadius: 20,
+                    spreadRadius: 3,
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            color: isPrimary ? const Color(0xFF1a1410) : const Color(0xFFd4a574),
+            letterSpacing: 2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showBuyDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => const BuyGameDialog(),
+    );
+  }
+
+  void _showCardGallery() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const CardGalleryModal(),
+    );
+  }
+}
+
+class BuyGameDialog extends StatefulWidget {
+  const BuyGameDialog({super.key});
+
+  @override
+  State<BuyGameDialog> createState() => _BuyGameDialogState();
+}
+
+class _BuyGameDialogState extends State<BuyGameDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gameProvider = Provider.of<GameProvider>(context);
+    return ScaleTransition(
+      scale: Tween<double>(begin: 0.7, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+      ),
+      child: Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF1a1410),
+            borderRadius: BorderRadius.circular(60),
+            border: Border.all(color: const Color(0xFFc19a6b), width: 3),
+          ),
+          padding: const EdgeInsets.all(40),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  gameProvider.game.name,
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border:
+                        Border.all(color: const Color(0xFFc19a6b), width: 1.5),
+                    color: const Color(0xFFc19a6b).withOpacity(0.08),
+                  ),
+                  child: Text(
+                    gameProvider.game.longDescription,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFFe8c4a0),
+                      fontSize: 14,
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        const Text(
+                          '💰 PRICE',
+                          style: TextStyle(
+                            color: Color(0xFFd4a574),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '\$${gameProvider.game.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFFc19a6b),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Text(
+                          '⭐ RATING',
+                          style: TextStyle(
+                            color: Color(0xFFd4a574),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '${gameProvider.game.rating}',
+                          style: const TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFFc19a6b),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('✝️ Thank you for your interest!'),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFc19a6b),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 60,
+                      vertical: 18,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  child: const Text(
+                    'SECURE ORDER',
+                    style: TextStyle(
+                      color: Color(0xFF1a1410),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CardGalleryModal extends StatefulWidget {
+  const CardGalleryModal({super.key});
+
+  @override
+  State<CardGalleryModal> createState() => _CardGalleryModalState();
+}
+
+class _CardGalleryModalState extends State<CardGalleryModal>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  int _currentCard = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF1a1410),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(60)),
+          border: Border(
+            top: BorderSide(color: const Color(0xFFc19a6b), width: 3),
+          ),
+        ),
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xFFc19a6b), width: 2),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Text(
+                '🎴 Card ${_currentCard + 1} of 120 🎴',
+                style: const TextStyle(
+                  color: Color(0xFFd4a574),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Expanded(
+              child: PageView.builder(
+                onPageChanged: (index) {
+                  setState(() => _currentCard = index);
+                },
+                itemCount: 120,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(
+                          color: const Color(0xFFc19a6b),
+                          width: 2.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFc19a6b).withOpacity(0.4),
+                            blurRadius: 35,
+                            spreadRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.asset(
+                          Provider.of<GameProvider>(context)
+                              .getCardImagePath(index),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 30),
+          ],
+        ),
+      ),
+    );
+  }
+}
