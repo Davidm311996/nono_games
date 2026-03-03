@@ -54,7 +54,7 @@ lib/
 
 1. Navigate to the project directory:
 ```bash
-cd nono_games
+cd nanogames_website
 ```
 
 2. Install dependencies:

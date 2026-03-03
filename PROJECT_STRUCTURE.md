@@ -1,48 +1,25 @@
-# Project Structure - Nano Games Website
-
-This is now a **web-only Flutter project**. All platform-specific folders have been removed.
-
-## 📁 Clean Folder Structure
-
-```
-nono_games/
+nanogames_website/
 ├── lib/                          # Dart source code
 │   ├── main.dart                # App entry point
-│   ├── models/
-│   │   └── game.dart            # Data models (Game, User, CartItem)
-│   ├── providers/
-│   │   └── game_provider.dart   # State management (GameProvider, CartProvider, UserProvider)
-│   └── pages/
-│       ├── home_page.dart       # Landing page
-│       ├── shop_page.dart       # Games catalog
-│       ├── game_details_page.dart # Game detail view
-│       ├── cart_page.dart       # Shopping cart
-│       └── account_page.dart    # User account
+│   ├── ...
 │
-├── web/                         # Web-specific files
-│   ├── index.html              # HTML entry point
-│   ├── favicon.png             # Website favicon
-│   ├── manifest.json           # Web app manifest
-│   └── icons/                  # Web icons
+├── web/                         # Web source files
+│   ├── index.html              # Source HTML
+│   ├── ...
 │
-├── assets/                      # Static assets
-│   ├── games/                  # Game images (add your game images here)
-│   └── icons/                  # Custom icons and logos
+├── assets/                      # Both source and built assets
 │
-├── public/                      # Static web files (optional)
+├── index.html                   # [DEPLOYED] Built HTML entry point
+├── main.dart.js                 # [DEPLOYED] Built JS
+├── flutter_bootstrap.js         # [DEPLOYED] Built bootstrap
+├── canvaskit/                   # [DEPLOYED] Built CanvasKit files
+├── manifest.json                # [DEPLOYED] Web app manifest
+├── favicon.png                  # [DEPLOYED] Website favicon
 │
-├── test/                        # Unit and widget tests
-│   └── widget_test.dart
-│
-├── build/                       # Build output (auto-generated)
+├── build/                       # Temporary build output (ignored)
 │
 ├── pubspec.yaml                # Project configuration
-├── pubspec.lock                # Dependency lock file
-├── analysis_options.yaml       # Dart lint rules
-├── README.md                   # Original project README
-├── WEBSITE_README.md           # Website-specific documentation
-└── nono_games.iml             # IDE project file
-```
+├── ...
 
 ## 🗑️ Removed Folders
 
